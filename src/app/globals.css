@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+:root {
+  --dark: #080614;
+  --deep-purple: #2b046a;
+  --card-bg: #03070a;
+  --neon: #271864;
+  --text-primary: #ffffff;
+  --text-secondary: #c0c0c0;
+}
+
+html,
+body {
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  font-family: "Roboto", sans-serif;
+  color: var(--text-primary);
+  background-color: var(--dark);
+  background-image: radial-gradient(
+      circle at 17% 15%,
+      var(--deep-purple) 0%,
+      transparent 10%
+    ),
+    radial-gradient(circle at 60% 25%, var(--deep-purple) 0%, transparent 10%),
+    radial-gradient(circle at 10% 75%, var(--deep-purple) 0%, transparent 10%),
+    radial-gradient(circle at 90% 75%, var(--deep-purple) 0%, transparent 10%),
+    radial-gradient(circle at 64% 95%, var(--deep-purple) 0%, transparent 10%),
+    radial-gradient(circle at 90% 15%, var(--deep-purple) 0%, transparent 10%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
