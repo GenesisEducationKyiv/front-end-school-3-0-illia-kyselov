@@ -1,14 +1,17 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import type { Track } from '../../../backend/src/types'
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { ok, err, Result } from 'neverthrow';
+import { parseErrorMessage } from '@/utils/neverthrow.helpers';
+import type { Track } from '../../../backend/src/types';
+import { TrackFormData } from '@/types/track.schema';
 
 export interface PaginatedTracks {
-    data: Track[]
+    data: Track[];
     meta: {
-        total: number
-        page: number
-        limit: number
-        totalPages: number
-    }
+        total: number;
+        page: number;
+        limit: number;
+        totalPages: number;
+    };
 }
 
 export const tracksApi = createApi({
@@ -21,12 +24,12 @@ export const tracksApi = createApi({
         getTracks: builder.query<
             PaginatedTracks,
             {
-                page?: number
-                limit?: number
-                search?: string
-                genre?: string
-                artist?: string
-                sort?: string
+                page?: number;
+                limit?: number;
+                search?: string;
+                genre?: string;
+                artist?: string;
+                sort?: string;
             }
         >({
             query: ({
@@ -37,17 +40,20 @@ export const tracksApi = createApi({
                 artist = '',
                 sort = '',
             }) => {
-                const params: Record<string, string | number> = { page, limit }
-                if (search.trim()) params.search = search.trim()
-                if (genre) params.genre = genre
-                if (artist) params.artist = artist
-                if (sort) {
-                    const [field, order = 'asc'] = sort.split(':')
-                    params.sort = field
-                    params.order = order
-                }
-                return { url: '/api/tracks', params }
+                const [field, order = 'asc'] = sort.split(':');
+
+                const params = {
+                    page,
+                    limit,
+                    ...(search.trim() && { search: search.trim() }),
+                    ...(genre && { genre }),
+                    ...(artist && { artist }),
+                    ...(sort && { sort: field, order }),
+                };
+
+                return { url: '/api/tracks', params };
             },
+
             providesTags: (result) =>
                 result
                     ? [
@@ -62,50 +68,84 @@ export const tracksApi = createApi({
             providesTags: [{ type: 'Genres', id: 'LIST' }],
         }),
 
-        createTrack: builder.mutation<
-            Track,
-            Partial<Omit<Track, 'id' | 'slug' | 'createdAt' | 'updatedAt'>>
-        >({
-            query: (body) => ({
-                url: '/api/tracks',
-                method: 'POST',
-                body,
-            }),
+        createTrack: builder.mutation<Result<Track, string>, TrackFormData>({
+            async queryFn(newTrack, _queryApi, _extraOptions, baseQuery) {
+                try {
+                    const response = await baseQuery({
+                        url: '/api/tracks',
+                        method: 'POST',
+                        body: newTrack,
+                    });
+                    if (response.error) {
+                        return { data: err(parseErrorMessage(response.error)) };
+                    }
+                    return { data: ok(response.data as Track) };
+                } catch (error) {
+                    return { data: err(parseErrorMessage(error)) };
+                }
+            },
             invalidatesTags: [{ type: 'Tracks', id: 'LIST' }],
         }),
 
-        updateTrack: builder.mutation<
-            Track,
-            { id: string } & Partial<Omit<Track, 'id' | 'slug' | 'createdAt' | 'updatedAt'>>
-        >({
-            query: ({ id, ...patch }) => ({
-                url: `/api/tracks/${id}`,
-                method: 'PUT',
-                body: patch,
-            }),
+        updateTrack: builder.mutation<Result<Track, string>, { id: string } & TrackFormData>({
+            async queryFn({ id, ...patch }, _queryApi, _extraOptions, baseQuery) {
+                try {
+                    const response = await baseQuery({
+                        url: `/api/tracks/${id}`,
+                        method: 'PUT',
+                        body: patch,
+                    });
+                    if (response.error) {
+                        return { data: err(parseErrorMessage(response.error)) };
+                    }
+                    return { data: ok(response.data as Track) };
+                } catch (error) {
+                    return { data: err(parseErrorMessage(error)) };
+                }
+            },
             invalidatesTags: (result, error, { id }) => [
                 { type: 'Tracks', id },
                 { type: 'Tracks', id: 'LIST' },
             ],
         }),
 
-        uploadTrack: builder.mutation<Track, { id: string; formData: FormData }>({
-            query: ({ id, formData }) => ({
-                url: `/api/tracks/${id}/upload`,
-                method: 'POST',
-                body: formData,
-            }),
+        uploadTrack: builder.mutation<Result<Track, string>, { id: string; formData: FormData }>({
+            async queryFn({ id, formData }, _queryApi, _extraOptions, baseQuery) {
+                try {
+                    const response = await baseQuery({
+                        url: `/api/tracks/${id}/upload`,
+                        method: 'POST',
+                        body: formData,
+                    });
+                    if (response.error) {
+                        return { data: err(parseErrorMessage(response.error)) };
+                    }
+                    return { data: ok(response.data as Track) };
+                } catch (error) {
+                    return { data: err(parseErrorMessage(error)) };
+                }
+            },
             invalidatesTags: (result, error, { id }) => [
                 { type: 'Tracks', id },
                 { type: 'Tracks', id: 'LIST' },
             ],
         }),
 
-        deleteTrackFile: builder.mutation<Track, string>({
-            query: (id) => ({
-                url: `/api/tracks/${id}/file`,
-                method: 'DELETE',
-            }),
+        deleteTrackFile: builder.mutation<Result<Track, string>, string>({
+            async queryFn(id, _queryApi, _extraOptions, baseQuery) {
+                try {
+                    const response = await baseQuery({
+                        url: `/api/tracks/${id}/file`,
+                        method: 'DELETE',
+                    });
+                    if (response.error) {
+                        return { data: err(parseErrorMessage(response.error)) };
+                    }
+                    return { data: ok(response.data as Track) };
+                } catch (error) {
+                    return { data: err(parseErrorMessage(error)) };
+                }
+            },
             invalidatesTags: (result, error, id) => [
                 { type: 'Tracks', id },
                 { type: 'Tracks', id: 'LIST' },
@@ -135,7 +175,7 @@ export const tracksApi = createApi({
                 result ? [{ type: 'Tracks' as const, id: result.id }] : [],
         }),
     }),
-})
+});
 
 export const {
     useGetTracksQuery,
@@ -147,4 +187,4 @@ export const {
     useDeleteTrackMutation,
     useDeleteTracksMutation,
     useGetTrackBySlugQuery,
-} = tracksApi
+} = tracksApi;

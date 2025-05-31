@@ -5,7 +5,6 @@ import Modal from './Modal';
 import ModalActions from './UI/ModalActions';
 import { useUploadTrackMutation, useDeleteTrackFileMutation } from '@/store/services/tracksApi';
 import { toast } from 'react-hot-toast';
-import { parseErrorMessage } from '@/utils/parseError';
 
 interface UploadModalProps {
     trackId: string;
@@ -18,7 +17,6 @@ export default function UploadModal({ trackId, existingFileName, open, onClose }
     const [newFile, setNewFile] = useState<File | null>(null);
     const [displayName, setDisplayName] = useState<string | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
     const inputRef = useRef<HTMLInputElement>(null);
 
     const [uploadTrack, { isLoading: isUploading }] = useUploadTrackMutation();
@@ -50,14 +48,14 @@ export default function UploadModal({ trackId, existingFileName, open, onClose }
             return;
         }
         if (existingFileName) {
-            try {
-                await deleteFile(trackId).unwrap();
-                toast.success('Audio file removed');
-                setDisplayName(null);
-                if (inputRef.current) inputRef.current.value = '';
-            } catch {
-                toast.error('Failed to remove audio file');
+            const result = (await deleteFile(trackId)).data;
+            if (result?.isErr()) {
+                toast.error(result.error);
+                return;
             }
+            toast.success('Audio file removed');
+            setDisplayName(null);
+            if (inputRef.current) inputRef.current.value = '';
         }
     };
 
@@ -68,24 +66,22 @@ export default function UploadModal({ trackId, existingFileName, open, onClose }
         const formData = new FormData();
         formData.append('file', newFile);
 
-        try {
-            await uploadTrack({ id: trackId, formData }).unwrap();
-            toast.success('File uploaded');
-            onClose();
-        } catch (err: unknown) {
-            const msg = parseErrorMessage(err, 'Failed to upload file');
-            setErrorMessage(msg);
-            toast.error(msg);
+        const result = (await uploadTrack({ id: trackId, formData })).data;
+        if (result?.isErr()) {
+            setErrorMessage(result.error);
+            toast.error(result.error);
+            return;
         }
+
+        toast.success('File uploaded');
+        onClose();
     };
 
     if (!open) return null;
 
     return (
         <Modal open={open} onClose={onClose}>
-            <h2 className="mb-4 text-2xl font-bold text-white">
-                Upload Audio File
-            </h2>
+            <h2 className="mb-4 text-2xl font-bold text-white">Upload Audio File</h2>
 
             <div className="flex items-center space-x-2 mb-4">
                 <label
@@ -117,9 +113,7 @@ export default function UploadModal({ trackId, existingFileName, open, onClose }
                 className="hidden"
             />
 
-            {errorMessage && (
-                <p className="mt-2 text-red-500 text-sm">{errorMessage}</p>
-            )}
+            {errorMessage && <p className="mt-2 text-red-500 text-sm">{errorMessage}</p>}
 
             <form onSubmit={handleSubmit}>
                 <ModalActions

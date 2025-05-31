@@ -22,7 +22,6 @@ import ConfirmDialog from '@/components/ConfirmDialog';
 import type { Track } from '../../../backend/src/types';
 import { addArtists } from '@/store/slices/artistsSlice';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { parseErrorMessage } from '@/utils/parseError';
 
 export default function TracksPage() {
     const dispatch = useAppDispatch();
@@ -43,7 +42,7 @@ export default function TracksPage() {
 
     const debouncedSearch = useDebounce(search, 400);
     const { data: genresList = [] } = useGetGenresQuery();
-    const { data, isLoading, isError, error } = useGetTracksQuery({
+    const { data, isLoading, isError } = useGetTracksQuery({
         page,
         limit: 9,
         search: debouncedSearch,
@@ -94,9 +93,8 @@ export default function TracksPage() {
                     </span>
                 );
             }
-        } catch (err: unknown) {
-            const msg = parseErrorMessage(err, 'Failed to delete');
-            toast.error(<span data-testid="toast-error">{msg}</span>);
+        } catch {
+            toast.error('Failed to delete');
         } finally {
             setSelectedIds([]);
             setPendingDeleteIds([]);
@@ -152,9 +150,7 @@ export default function TracksPage() {
                                 data-testid="loading-tracks"
                             />
                         </div>
-                    ) : isError ? (
-                        <EmptyState message={String(error)} />
-                    ) : tracks.length === 0 ? (
+                    ) : isError || tracks.length === 0 ? (
                         <EmptyState message="Whoops… nothing here yet" />
                     ) : (
                         <>
@@ -180,11 +176,7 @@ export default function TracksPage() {
                             </AnimatePresence>
 
                             {totalPages > 1 && (
-                                <Pagination
-                                    page={page}
-                                    total={totalPages}
-                                    onPage={setPage}
-                                />
+                                <Pagination page={page} total={totalPages} onPage={setPage} />
                             )}
                         </>
                     )}

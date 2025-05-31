@@ -1,19 +1,19 @@
-'use client'
+'use client';
 
-import React, { useEffect } from 'react'
-import GenreSelector from './GenreSelector'
-import { useTrackForm } from '@/hooks/useTrackForm'
-import { FormValues } from '@/types/TrackForm.types'
-import Input from './UI/Input'
-import ModalActions from './UI/ModalActions'
+import React, { useEffect } from 'react';
+import GenreSelector from './GenreSelector';
+import { useTrackForm } from '@/hooks/useTrackForm';
+import { TrackFormData } from '@/types/track.schema';
+import Input from './UI/Input';
+import ModalActions from './UI/ModalActions';
 
 interface TrackFormProps {
-    defaultValues: FormValues
-    title: string
-    onSubmit: (data: FormValues) => void
-    onCancel: () => void
-    isSubmitting: boolean
-    titleError?: string
+    defaultValues: Partial<TrackFormData>;
+    title: string;
+    onSubmit: (data: TrackFormData) => void;
+    onCancel: () => void;
+    isSubmitting: boolean;
+    titleError?: string;
 }
 
 export default function TrackForm({
@@ -35,29 +35,29 @@ export default function TrackForm({
         selected,
         toggleGenre,
         setValue,
-    } = useTrackForm(defaultValues)
+    } = useTrackForm(defaultValues);
 
     useEffect(() => {
         if (titleError) {
-            setValue('title', '', { shouldValidate: true })
+            setValue('title', '', { shouldValidate: true });
         }
-    }, [titleError, setValue])
+    }, [titleError, setValue]);
 
-    const showFieldError = (field: keyof FormValues) =>
+    const showFieldError = (field: keyof TrackFormData) =>
         Boolean(
             (errors[field]?.message || (field === 'title' && titleError)) &&
             (touchedFields[field] || isSubmitted),
-        )
+        );
 
-    const getFieldError = (field: keyof FormValues) => {
+    const getFieldError = (field: keyof TrackFormData) => {
         if (field === 'title' && !errors.title && titleError) {
-            return { message: titleError }
+            return { message: titleError };
         }
         if (errors[field]?.message) {
-            return { message: errors[field]!.message! }
+            return { message: errors[field]!.message! };
         }
-        return undefined
-    }
+        return undefined;
+    };
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} data-testid="track-form">
@@ -65,10 +65,7 @@ export default function TrackForm({
                 <h2 className="mb-4 text-3xl font-bold text-white">{title}</h2>
 
                 <Input
-                    {...register('title', {
-                        required: 'Required',
-                        maxLength: { value: 30, message: 'Max 30 chars' },
-                    })}
+                    {...register('title')}
                     placeholder="Title"
                     data-testid="input-title"
                     className="w-full"
@@ -80,10 +77,7 @@ export default function TrackForm({
                 )}
 
                 <Input
-                    {...register('artist', {
-                        required: 'Required',
-                        maxLength: { value: 20, message: 'Max 20 chars' },
-                    })}
+                    {...register('artist')}
                     placeholder="Artist"
                     data-testid="input-artist"
                     className="w-full"
@@ -95,10 +89,7 @@ export default function TrackForm({
                 )}
 
                 <Input
-                    {...register('album', {
-                        required: 'Required',
-                        maxLength: { value: 15, message: 'Max 15 chars' },
-                    })}
+                    {...register('album')}
                     placeholder="Album"
                     data-testid="input-album"
                     className="w-full"
@@ -110,10 +101,7 @@ export default function TrackForm({
                 )}
 
                 <Input
-                    {...register('coverImage', {
-                        required: 'Required',
-                        validate: v => /^https?:\/\/.+\..+/.test(v) || 'Must be valid URL',
-                    })}
+                    {...register('coverImage')}
                     placeholder="Cover image URL"
                     data-testid="input-cover-image"
                     className="w-full"
@@ -138,5 +126,5 @@ export default function TrackForm({
                 isLoading={isSubmitting}
             />
         </form>
-    )
+    );
 }
