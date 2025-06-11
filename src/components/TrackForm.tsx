@@ -112,7 +112,7 @@ export default function TrackForm({
                 <Input
                     {...register('coverImage', {
                         validate: v =>
-                            !v || v.startsWith('https://') || 'Must start with https://',
+                            /^https:\/\/.+\.(jpg|jpeg|png|gif|webp|svg)$/i.test(v) || 'Must be a valid image URL starting with https://',
                     })}
                     placeholder="Cover image URL"
                     data-testid="input-cover-image"
