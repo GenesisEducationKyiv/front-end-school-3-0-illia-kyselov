@@ -1,11 +1,9 @@
-'use client'
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useGetGenresQuery } from "@/store/services/tracksApi";
+import { trackSchema, TrackFormData } from "@/types/track.schema";
 
-import { useForm } from 'react-hook-form'
-import { useEffect } from 'react'
-import { useGetGenresQuery } from '@/store/services/tracksApi'
-import { FormValues } from '@/types/TrackForm.types'
-
-export function useTrackForm(defaultValues: FormValues) {
+export function useTrackForm(defaultValues?: Partial<TrackFormData>) {
     const {
         register,
         handleSubmit,
@@ -14,37 +12,37 @@ export function useTrackForm(defaultValues: FormValues) {
         setError,
         clearErrors,
         formState: { errors, isValid, touchedFields, isSubmitted },
-    } = useForm<FormValues>({
-        defaultValues,
-        mode: 'onTouched',
-        reValidateMode: 'onChange',
-    })
+    } = useForm<TrackFormData>({
+        resolver: zodResolver(trackSchema),
+        defaultValues: defaultValues ?? {
+            title: "",
+            artist: "",
+            album: "",
+            coverImage: undefined,
+            genres: [],
+        },
+        mode: "onTouched",
+        reValidateMode: "onChange",
+    });
 
-    useEffect(() => {
-        register('genres', {
-            validate: (v: string[]) =>
-                v.length > 0 || 'Pick at least one genre',
-        })
-    }, [register])
+    const { data: genres = [] } = useGetGenresQuery();
+    const selected = watch("genres");
 
-    const { data: genres = [] } = useGetGenresQuery()
-    const selected = watch('genres')
-
-    const toggleGenre = (g: string) => {
-        const next = selected.includes(g)
-            ? selected.filter(x => x !== g)
+    const toggleGenre = (genre: string) => {
+        const next = selected.includes(genre)
+            ? selected.filter((g) => g !== genre)
             : selected.length === 3
-                ? [...selected.slice(1), g]
-                : [...selected, g]
+                ? [...selected.slice(1), genre]
+                : [...selected, genre];
 
-        setValue('genres', next, { shouldValidate: true })
+        setValue("genres", next, { shouldValidate: true });
 
         if (next.length === 0) {
-            setError('genres', { message: 'Pick at least one genre' })
+            setError("genres", { message: "Pick at least one genre" });
         } else {
-            clearErrors('genres')
+            clearErrors("genres");
         }
-    }
+    };
 
     return {
         genres,
@@ -57,5 +55,5 @@ export function useTrackForm(defaultValues: FormValues) {
         selected,
         toggleGenre,
         setValue,
-    }
+    };
 }
