@@ -5,9 +5,8 @@ import TrackForm from './TrackForm';
 import Modal from './Modal';
 import { useCreateTrackMutation, useUpdateTrackMutation } from '@/store/services/tracksApi';
 import { Track } from '../../backend/src/types';
-import { FormValues } from '@/types/TrackForm.types';
+import { TrackFormData } from '@/types/track.schema';
 import { toast } from 'react-hot-toast';
-import { parseErrorMessage } from '@/utils/parseError';
 
 interface Props {
     open: boolean;
@@ -20,7 +19,9 @@ export default function TrackModal({ open, onClose, track }: Props) {
     const [updateTrack, { isLoading: updating }] = useUpdateTrackMutation();
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-    const defaultValues: FormValues = {
+    if (!open) return null;
+
+    const defaultValues: TrackFormData = {
         title: track?.title || '',
         artist: track?.artist || '',
         album: track?.album || '',
@@ -28,25 +29,24 @@ export default function TrackModal({ open, onClose, track }: Props) {
         genres: track?.genres || [],
     };
 
-    const handleSave = async (data: FormValues) => {
+    const handleSave = async (data: TrackFormData) => {
         setErrorMessage(null);
-        try {
-            if (track) {
-                await updateTrack({ id: track.id, ...data }).unwrap();
-                toast.success(<span data-testid="toast-success">Track updated</span>);
-            } else {
-                await createTrack(data).unwrap();
-                toast.success(<span data-testid="toast-success">Track created</span>);
-            }
-            onClose();
-        } catch (err: unknown) {
-            const msg = parseErrorMessage(err, 'Failed to save track');
-            toast.error(<span data-testid="toast-error">{msg}</span>);
-            setErrorMessage(msg);
+        let result;
+        if (track) {
+            result = (await updateTrack({ id: track.id, ...data })).data;
+        } else {
+            result = (await createTrack(data)).data;
         }
-    };
 
-    if (!open) return null;
+        if (result?.isErr()) {
+            setErrorMessage(result.error);
+            toast.error(result.error);
+            return;
+        }
+
+        toast.success(<span data-testid="toast-success">{track ? 'Track updated' : 'Track created'}</span>);
+        onClose();
+    };
 
     return (
         <Modal open={open} onClose={onClose}>
