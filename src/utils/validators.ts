@@ -1,2 +1,2 @@
 export const isUrl = (v = ''): true | string =>
-    /^https?:\/\/.+\..+/.test(v) || 'Must be valid URL'
+    v.startsWith('https://') || 'Must start with https://';

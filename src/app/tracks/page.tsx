@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { toast } from 'react-hot-toast';
 import NeonPanel from '@/components/UI/NeonPanel';
@@ -19,27 +19,31 @@ import TracksToolbar from '@/components/TracksToolbar';
 import BulkActionsBar from '@/components/BulkActionsBar';
 import TracksGrid from '@/components/TracksGrid';
 import ConfirmDialog from '@/components/ConfirmDialog';
-import type { Track } from '../../../backend/src/types';
 import { addArtists } from '@/store/slices/artistsSlice';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { parseErrorMessage } from '@/utils/parseError';
+import { useFilterParams } from '@/hooks/useFilterParams';
+import type { Track } from '../../../backend/src/types';
 
 export default function TracksPage() {
     const dispatch = useAppDispatch();
 
-    const [page, setPage] = useState(1);
-    const [search, setSearch] = useState('');
-    const [genre, setGenre] = useState('');
-    const [artist, setArtist] = useState('');
-    const [sort, setSort] = useState('');
+    const {
+        search, setSearch,
+        genre, setGenre,
+        artist, setArtist,
+        sort, setSort,
+        page, setPage,
+    } = useFilterParams({ genre: '', artist: '', search: '', sort: '', page: 1 });
+
     const [modalOpen, setModalOpen] = useState(false);
     const [editingTrack, setEditingTrack] = useState<Track | undefined>();
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [pendingDeleteIds, setPendingDeleteIds] = useState<string[]>([]);
-
     const [deleteSingle] = useDeleteTrackMutation();
     const [deleteBulk] = useDeleteTracksMutation();
-
+    const artistsList = useAppSelector(s => s.artists.list);
     const debouncedSearch = useDebounce(search, 400);
     const { data: genresList = [] } = useGetGenresQuery();
     const { data, isLoading, isError } = useGetTracksQuery({
@@ -60,19 +64,15 @@ export default function TracksPage() {
         }
     }, [tracks, dispatch]);
 
-    const artistsList = useAppSelector((state) => state.artists.list);
-
-    const toggleSelect = useCallback(
-        (id: string, on: boolean) =>
-            setSelectedIds(on ? [...selectedIds, id] : selectedIds.filter((x) => x !== id)),
-        [selectedIds]
-    );
+    const toggleSelect = useCallback((id: string, on: boolean) => {
+        setSelectedIds(curr => on ? [...curr, id] : curr.filter(x => x !== id));
+    }, []);
 
     const handleSelectAll = useCallback(() => {
-        setSelectedIds(
-            selectedIds.length === tracks.length ? [] : tracks.map((t) => t.id)
+        setSelectedIds(curr =>
+            curr.length === tracks.length ? [] : tracks.map(t => t.id)
         );
-    }, [selectedIds, tracks]);
+    }, [tracks]);
 
     const openConfirm = useCallback((ids: string[]) => {
         setPendingDeleteIds(ids);
