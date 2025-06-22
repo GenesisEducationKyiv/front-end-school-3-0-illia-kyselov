@@ -11,6 +11,7 @@
     "test:ui": "npx playwright test --ui"
   },
   "dependencies": {
+    "@mobily/ts-belt": "^3.13.1",
     "@hookform/resolvers": "^5.0.1",
     "@reduxjs/toolkit": "^2.7.0",
     "framer-motion": "^12.7.4",
