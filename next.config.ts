@@ -1,6 +1,16 @@
 import type { NextConfig } from 'next'
 
-const nextConfig: NextConfig = {
+import withBundleAnalyzer from '@next/bundle-analyzer';
+
+const withBundleAnalyzerConfigured = withBundleAnalyzer({
+    enabled: process.env.npm_lifecycle_event === 'analyze',
+});
+
+const baseConfig: NextConfig = {
+    reactStrictMode: true,
+
+    productionBrowserSourceMaps: true,
+
     async rewrites() {
         return [
             {
@@ -9,6 +19,10 @@ const nextConfig: NextConfig = {
             },
         ]
     },
+
+    webpack(config) {
+        return config
+    },
 }
 
-export default nextConfig
+export default withBundleAnalyzerConfigured(baseConfig)
