@@ -11,8 +11,8 @@
     "test:ui": "npx playwright test --ui"
   },
   "dependencies": {
-    "@mobily/ts-belt": "^3.13.1",
     "@hookform/resolvers": "^5.0.1",
+    "@mobily/ts-belt": "^3.13.1",
     "@reduxjs/toolkit": "^2.7.0",
     "framer-motion": "^12.7.4",
     "neverthrow": "^8.2.0",
@@ -23,7 +23,8 @@
     "react-hot-toast": "^2.5.2",
     "react-redux": "^9.2.0",
     "wavesurfer.js": "^7.9.4",
-    "zod": "^3.25.42"
+    "zod": "^3.25.42",
+    "zustand": "^5.0.6"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
