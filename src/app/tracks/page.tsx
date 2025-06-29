@@ -21,9 +21,10 @@ import TracksGrid from '@/components/TracksGrid';
 import ConfirmDialog from '@/components/ConfirmDialog';
 import { addArtists } from '@/store/slices/artistsSlice';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { parseErrorMessage } from '@/utils/parseError';
 import { useFilterParams } from '@/hooks/useFilterParams';
 import type { Track } from '../../../backend/src/types';
+import { useActiveTrackStore } from '@/store/zustand/activeTrackStore';
+import { useActiveTrackWS } from '@/hooks/useActiveTrackWS';
 
 export default function TracksPage() {
     const dispatch = useAppDispatch();
@@ -57,6 +58,9 @@ export default function TracksPage() {
 
     const tracks = useMemo(() => data?.data ?? [], [data]);
     const totalPages = data?.meta.totalPages ?? 1;
+
+    useActiveTrackWS()
+    const activeTitle = useActiveTrackStore(s => s.title)
 
     useEffect(() => {
         if (tracks.length) {
@@ -140,6 +144,11 @@ export default function TracksPage() {
                             onToggleAll={handleSelectAll}
                             onDeleteSelected={() => openConfirm(selectedIds)}
                         />
+                        {activeTitle &&
+                            <div className="fixed top-0 left-0 w-full bg-[var(--neon)] text-white text-center py-2 z-50">
+                                Active track: {activeTitle}
+                            </div>
+                        }
                     </div>
 
                     {isLoading ? (
