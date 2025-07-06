@@ -1,3 +1,4 @@
+
 'use client'
 
 import { useState } from 'react'
@@ -46,7 +47,7 @@ export default function TrackCard({
                                 src={track.coverImage}
                                 alt={`${track.title} cover`}
                                 fill
-                                className="object-cover"
+                                className="object-cover w-[166px] h-[166px]"
                                 unoptimized
                             />
                         )}
