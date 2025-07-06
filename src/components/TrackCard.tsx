@@ -7,7 +7,7 @@ import EditIcon from '@/icons/EditIcon'
 import UploadIcon from '@/icons/UploadIcon'
 import UploadModal from './UploadModal'
 import Checkbox from './UI/Checkbox'
-import { Track } from '../../backend/src/types'
+import { Track } from '@/types/Track'
 
 interface Props {
     track: Track
@@ -92,7 +92,7 @@ export default function TrackCard({
                                 )}
                             </div>
                             <div className="flex flex-wrap gap-1">
-                                {track.genres?.map(g => (
+                                {track.genres?.map((g: string) => (
                                     <span
                                         key={g}
                                         className="text-xs px-2 py-1 bg-[#111023] rounded-full text-[#bfb8e5]"

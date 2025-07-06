@@ -1,7 +1,7 @@
 'use client';
 
 import TrackCard from '@/components/TrackCard';
-import type { Track } from '../../backend/src/types';
+import { Track } from '@/types/Track';
 
 interface Props {
     tracks: Track[];

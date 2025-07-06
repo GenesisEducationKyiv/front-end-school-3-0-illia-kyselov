@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test.use({ viewport: { width: 2560, height: 1440 } });
-test.setTimeout(60 * 1000);
+test.setTimeout(60_000);
 
 test('create, edit, search, select, delete and verify removal', async ({ page }) => {
     const uniqueId = Date.now().toString();
@@ -20,8 +20,7 @@ test('create, edit, search, select, delete and verify removal', async ({ page })
     await page.fill('[data-testid="input-album"]', albumName);
     await page.fill('[data-testid="input-cover-image"]', coverUrl);
 
-    const genreButton = page.locator('[data-testid="track-form"] button:not([data-testid])').first();
-    await genreButton.click();
+    await page.click('button:has-text("Jazz")');
 
     await page.click('[data-testid="submit-button"]');
     await page.waitForSelector(`text=${trackTitle}`);

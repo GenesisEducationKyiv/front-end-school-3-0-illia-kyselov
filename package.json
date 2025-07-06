@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "test": "vitest",
-    "test:ui": "npx playwright test --ui"
+    "test:ui": "npx playwright test --ui",
+    "test:e2e": "npx playwright test"
   },
   "dependencies": {
     "@mobily/ts-belt": "^3.13.1",
