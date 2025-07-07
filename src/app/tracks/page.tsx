@@ -21,6 +21,7 @@ import { addArtists } from '@/store/slices/artistsSlice';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { useFilterParams } from '@/hooks/useFilterParams';
 import type { Track } from '../../../backend/src/types';
+import { useArtistsStore } from '@/store/useArtistsStore';
 import dynamic from 'next/dynamic';
 
 const ConfirmDialog = dynamic(
@@ -36,8 +37,6 @@ const TrackModal = dynamic(
 );
 
 export default function TracksPage() {
-    const dispatch = useAppDispatch();
-
     const {
         search, setSearch,
         genre, setGenre,
@@ -53,7 +52,8 @@ export default function TracksPage() {
     const [pendingDeleteIds, setPendingDeleteIds] = useState<string[]>([]);
     const [deleteSingle] = useDeleteTrackMutation();
     const [deleteBulk] = useDeleteTracksMutation();
-    const artistsList = useAppSelector(s => s.artists.list);
+    const artistsList = useArtistsStore(s => s.list);
+    const addArtists = useArtistsStore(s => s.addArtists);
     const debouncedSearch = useDebounce(search, 400);
     const { data: genresList = [] } = useGetGenresQuery();
     const { data, isLoading, isError } = useGetTracksQuery({
@@ -70,9 +70,9 @@ export default function TracksPage() {
 
     useEffect(() => {
         if (tracks.length) {
-            dispatch(addArtists(tracks.map((t) => t.artist)));
+            addArtists(tracks.map(t => t.artist));
         }
-    }, [tracks, dispatch]);
+    }, [tracks, addArtists]);
 
     const toggleSelect = useCallback((id: string, on: boolean) => {
         setSelectedIds(curr => on ? [...curr, id] : curr.filter(x => x !== id));
