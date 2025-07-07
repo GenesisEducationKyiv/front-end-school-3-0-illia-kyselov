@@ -41,7 +41,7 @@ export default function CustomAudioPlayer({ src, trackId }: Props) {
                 className={`h-16 flex-1 ${failed ? 'hidden' : 'cursor-pointer'}`}
             />
 
-            <span className="text-sm text-[#5f6268]">
+            <span className="text-sm text-[#bfb8e5]">
                 {failed ? 'Audio not found' : formatTime(current)}
             </span>
         </div>
