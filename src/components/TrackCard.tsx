@@ -1,13 +1,28 @@
 'use client'
 
 import { useState } from 'react'
+import dynamic from 'next/dynamic'
 import Image from 'next/image'
-import CustomAudioPlayer from './CustomAudioPlayer'
 import EditIcon from '@/icons/EditIcon'
 import UploadIcon from '@/icons/UploadIcon'
-import UploadModal from './UploadModal'
 import Checkbox from './UI/Checkbox'
-import { Track } from '../../backend/src/types'
+import type { Track } from '../../backend/src/types'
+
+const CustomAudioPlayer = dynamic(
+    () => import('./CustomAudioPlayer'),
+    {
+        loading: () => (
+            <div className="h-20 w-full bg-gray-800 rounded animate-pulse" />
+        ),
+    }
+)
+
+const UploadModal = dynamic(
+    () => import('./UploadModal'),
+    {
+        loading: () => null,
+    }
+)
 
 interface Props {
     track: Track
@@ -114,12 +129,14 @@ export default function TrackCard({
                 </div>
             </div>
 
-            <UploadModal
-                trackId={track.id}
-                existingFileName={track.audioFile ?? undefined}
-                open={isUploadOpen}
-                onClose={() => setIsUploadOpen(false)}
-            />
+            {isUploadOpen && (
+                <UploadModal
+                    trackId={track.id}
+                    existingFileName={track.audioFile ?? undefined}
+                    open={isUploadOpen}
+                    onClose={() => setIsUploadOpen(false)}
+                />
+            )}
         </>
     )
 }

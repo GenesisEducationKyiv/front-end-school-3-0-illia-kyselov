@@ -1,6 +1,6 @@
 'use client';
 
-import TrackCard from '@/components/TrackCard';
+import dynamic from 'next/dynamic';
 import type { Track } from '../../backend/src/types';
 
 interface Props {
@@ -8,8 +8,17 @@ interface Props {
     selectedIds: string[];
     onEdit(t: Track): void;
     onSelect(id: string, on: boolean): void;
-    onDelete: (track: Track) => void;
+    onDelete(track: Track): void;
 }
+
+const TrackCard = dynamic(
+    () => import('@/components/TrackCard'),
+    {
+        loading: () => (
+            <div className="animate-pulse bg-gray-700 rounded-lg h-52 w-full" />
+        ),
+    }
+);
 
 export default function TracksGrid({
     tracks,

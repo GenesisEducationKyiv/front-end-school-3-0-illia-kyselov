@@ -5,7 +5,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { toast } from 'react-hot-toast';
 import NeonPanel from '@/components/UI/NeonPanel';
 import EmptyState from '@/components/EmptyState';
-import TrackModal from '@/components/TrackModal';
 import Pagination from '@/components/UI/Pagination';
 import { useDebounce } from '@/hooks/useDebounce';
 import {
@@ -18,10 +17,24 @@ import TracksHeader from '@/components/TracksHeader';
 import TracksToolbar from '@/components/TracksToolbar';
 import BulkActionsBar from '@/components/BulkActionsBar';
 import TracksGrid from '@/components/TracksGrid';
-import ConfirmDialog from '@/components/ConfirmDialog';
+import { addArtists } from '@/store/slices/artistsSlice';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { useFilterParams } from '@/hooks/useFilterParams';
 import type { Track } from '../../../backend/src/types';
 import { useArtistsStore } from '@/store/useArtistsStore';
+import dynamic from 'next/dynamic';
+
+const ConfirmDialog = dynamic(
+    () => import('@/components/ConfirmDialog'),
+    { loading: () => null }
+);
+
+const TrackModal = dynamic(
+    () => import('@/components/TrackModal'),
+    {
+        loading: () => null
+    }
+);
 
 export default function TracksPage() {
     const {
@@ -186,12 +199,14 @@ export default function TracksPage() {
                 track={editingTrack}
             />
 
-            <ConfirmDialog
-                open={confirmOpen}
-                count={pendingDeleteIds.length}
-                onConfirm={handleConfirmDelete}
-                onCancel={() => setConfirmOpen(false)}
-            />
+            {confirmOpen && (
+                <ConfirmDialog
+                    open={confirmOpen}
+                    count={pendingDeleteIds.length}
+                    onConfirm={handleConfirmDelete}
+                    onCancel={() => setConfirmOpen(false)}
+                />
+            )}
         </>
     );
 }
