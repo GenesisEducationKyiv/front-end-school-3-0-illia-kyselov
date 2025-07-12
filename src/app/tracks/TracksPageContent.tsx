@@ -19,14 +19,11 @@ import TracksToolbar from '@/components/TracksToolbar';
 import BulkActionsBar from '@/components/BulkActionsBar';
 import TracksGrid from '@/components/TracksGrid';
 import ConfirmDialog from '@/components/ConfirmDialog';
-import { addArtists } from '@/store/slices/artistsSlice';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { useArtistsStore } from '@/store/useArtistsStore';
 import { useFilterParams } from '@/hooks/useFilterParams';
 import { Track } from '@/types/Track';
 
 export default function TracksPageContent() {
-    const dispatch = useAppDispatch();
-
     const {
         search, setSearch,
         genre, setGenre,
@@ -42,7 +39,8 @@ export default function TracksPageContent() {
     const [pendingDeleteIds, setPendingDeleteIds] = useState<string[]>([]);
     const [deleteSingle] = useDeleteTrackMutation();
     const [deleteBulk] = useDeleteTracksMutation();
-    const artistsList = useAppSelector(s => s.artists.list);
+    const artistsList = useArtistsStore(s => s.list);
+    const addArtists = useArtistsStore(s => s.addArtists);
     const debouncedSearch = useDebounce(search, 400);
     const { data: genresList = [] } = useGetGenresQuery();
     const { data, isLoading, isError } = useGetTracksQuery({
@@ -59,9 +57,9 @@ export default function TracksPageContent() {
 
     useEffect(() => {
         if (tracks.length) {
-            dispatch(addArtists(tracks.map((t) => t.artist)));
+            addArtists(tracks.map((t) => t.artist));
         }
-    }, [tracks, dispatch]);
+    }, [addArtists, tracks]);
 
     const toggleSelect = useCallback((id: string, on: boolean) => {
         setSelectedIds(curr => on ? [...curr, id] : curr.filter(x => x !== id));
