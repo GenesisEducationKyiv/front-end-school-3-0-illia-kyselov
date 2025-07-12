@@ -1,7 +1,7 @@
 'use client';
 
+import { Track } from '@/types/Track';
 import dynamic from 'next/dynamic';
-import type { Track } from '../../backend/src/types';
 
 interface Props {
     tracks: Track[];
