@@ -18,11 +18,11 @@ import TracksToolbar from '@/components/TracksToolbar';
 import BulkActionsBar from '@/components/BulkActionsBar';
 import TracksGrid from '@/components/TracksGrid';
 import { useFilterParams } from '@/hooks/useFilterParams';
-import type { Track } from '../../../backend/src/types';
 import { useActiveTrackStore } from '@/store/zustand/activeTrackStore';
 import { useActiveTrackWS } from '@/hooks/useActiveTrackWS';
 import { useArtistsStore } from '@/store/useArtistsStore';
 import dynamic from 'next/dynamic';
+import { Track } from '@/types/Track';
 
 const ConfirmDialog = dynamic(
     () => import('@/components/ConfirmDialog'),

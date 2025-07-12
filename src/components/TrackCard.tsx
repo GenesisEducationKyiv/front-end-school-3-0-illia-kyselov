@@ -6,7 +6,7 @@ import Image from 'next/image'
 import EditIcon from '@/icons/EditIcon'
 import UploadIcon from '@/icons/UploadIcon'
 import Checkbox from './UI/Checkbox'
-import type { Track } from '../../backend/src/types'
+import { Track } from '@/types/Track'
 
 const CustomAudioPlayer = dynamic(
     () => import('./CustomAudioPlayer'),
