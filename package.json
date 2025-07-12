@@ -2,6 +2,7 @@
   "name": "music-manager",
   "version": "0.1.0",
   "private": true,
+  "sideEffects": false,
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
@@ -9,11 +10,12 @@
     "lint": "next lint",
     "test": "vitest",
     "test:ui": "npx playwright test --ui",
-    "test:e2e": "npx playwright test"
+    "test:e2e": "npx playwright test",
+    "analyze": "next build"
   },
   "dependencies": {
-    "@mobily/ts-belt": "^3.13.1",
     "@hookform/resolvers": "^5.0.1",
+    "@mobily/ts-belt": "^3.13.1",
     "@reduxjs/toolkit": "^2.7.0",
     "framer-motion": "^12.7.4",
     "neverthrow": "^8.2.0",
@@ -24,10 +26,12 @@
     "react-hot-toast": "^2.5.2",
     "react-redux": "^9.2.0",
     "wavesurfer.js": "^7.9.4",
-    "zod": "^3.25.42"
+    "zod": "^3.25.42",
+    "zustand": "^5.0.6"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@next/bundle-analyzer": "^15.3.4",
     "@playwright/test": "^1.53.1",
     "@tailwindcss/postcss": "^4",
     "@testing-library/react": "^16.3.0",
