@@ -20,6 +20,7 @@ test('create, edit, search, select, delete and verify removal', async ({ page })
     await page.fill('[data-testid="input-album"]', albumName);
     await page.fill('[data-testid="input-cover-image"]', coverUrl);
 
+    await page.waitForSelector('button:has-text("Jazz")', { timeout: 10000 });
     await page.click('button:has-text("Jazz")');
 
     await page.click('[data-testid="submit-button"]');
