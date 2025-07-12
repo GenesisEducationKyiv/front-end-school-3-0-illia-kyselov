@@ -26,7 +26,7 @@ jobs:
         run: npm run lint
 
       - name: 🔎 Type Check (TypeScript)
-        run: npx tsc --noEmit
+        run: npx tsc --noEmit --project tsconfig.json
 
       - name: 🧪 Run Vitest
         run: npm run test -- --run
