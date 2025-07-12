@@ -17,8 +17,6 @@ import TracksHeader from '@/components/TracksHeader';
 import TracksToolbar from '@/components/TracksToolbar';
 import BulkActionsBar from '@/components/BulkActionsBar';
 import TracksGrid from '@/components/TracksGrid';
-import { addArtists } from '@/store/slices/artistsSlice';
-import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { useFilterParams } from '@/hooks/useFilterParams';
 import type { Track } from '../../../backend/src/types';
 import { useActiveTrackStore } from '@/store/zustand/activeTrackStore';
