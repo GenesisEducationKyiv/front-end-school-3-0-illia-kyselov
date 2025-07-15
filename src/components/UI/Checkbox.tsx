@@ -8,13 +8,17 @@ interface CheckboxProps {
     checked: boolean
     onChange: (checked: boolean) => void
     testId?: string
+    label?: string
 }
 
 export default function Checkbox({
     checked,
     onChange,
     testId,
+    label = 'Позначити',
 }: CheckboxProps) {
+    const labelId = `label-${testId ?? 'checkbox'}`
+
     return (
         <motion.label
             className="inline-flex items-center cursor-pointer"
@@ -26,7 +30,12 @@ export default function Checkbox({
                 onChange={e => onChange(e.target.checked)}
                 className="sr-only"
                 data-testid={testId}
+                aria-labelledby={`label-${testId}`}
             />
+
+            <span id={labelId} className="sr-only">
+                {label}
+            </span>
 
             <motion.span
                 initial={false}
