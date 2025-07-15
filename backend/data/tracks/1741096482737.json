@@ -1,0 +1,14 @@
+{
+  "title": "As It Was",
+  "artist": "Harry Styles",
+  "genres": [
+    "Rock",
+    "Blues"
+  ],
+  "slug": "as-it-was",
+  "coverImage": "https://picsum.photos/seed/As%20It%20Was/300/300",
+  "id": "1741096482737",
+  "createdAt": "2025-03-04T13:54:42.737Z",
+  "updatedAt": "2025-06-27T12:47:14.331Z",
+  "audioFile": "1741096482737.mp3"
+}
