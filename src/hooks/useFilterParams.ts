@@ -49,7 +49,7 @@ export function useFilterParams(defaults: Defaults) {
             O.getWithDefault(stableDefaults.page)
         );
         setPage(parsedPage);
-    }, [searchParams]);
+    }, [searchParams, stableDefaults.artist, stableDefaults.genre, stableDefaults.page, stableDefaults.search, stableDefaults.sort]);
 
     useEffect(() => {
         const q = new URLSearchParams();

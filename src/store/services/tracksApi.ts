@@ -1,8 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { ok, err, Result } from 'neverthrow';
 import { parseErrorMessage } from '@/utils/neverthrow.helpers';
-import type { Track } from '../../../backend/src/types';
 import { TrackFormData } from '@/types/track.schema';
+import { Track } from '@/types/Track';
 
 export interface PaginatedTracks {
     data: Track[];

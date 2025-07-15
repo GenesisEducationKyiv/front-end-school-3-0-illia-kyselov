@@ -4,9 +4,9 @@ import React, { useState } from 'react';
 import TrackForm from './TrackForm';
 import Modal from './Modal';
 import { useCreateTrackMutation, useUpdateTrackMutation } from '@/store/services/tracksApi';
-import { Track } from '../../backend/src/types';
 import { TrackFormData } from '@/types/track.schema';
 import { toast } from 'react-hot-toast';
+import { Track } from '@/types/Track';
 
 interface Props {
     open: boolean;
