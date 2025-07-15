@@ -13,6 +13,7 @@
     "analyze": "next build",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
+    "test:e2e": "npx playwright test",
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",
@@ -33,7 +34,7 @@
   "devDependencies": {
     "@chromatic-com/storybook": "^4.0.1",
     "@eslint/eslintrc": "^3",
-    "@next/bundle-analyzer": "^15.3.4",
+    "@next/bundle-analyzer": "^15.3.5",
     "@playwright/test": "^1.53.1",
     "@storybook/addon-a11y": "^9.0.16",
     "@storybook/addon-docs": "^9.0.16",
